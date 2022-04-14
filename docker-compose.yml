@@ -1,0 +1,27 @@
+version: "3"
+services:
+  app:
+    build: .
+    command: pm2-dev ./app/app.js
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - mysql
+    ports:
+      - "3030:8080"
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/home/nodejs/node_modules
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - mysql:/var/lib/mysql
+    environment: 
+      MYSQL_ROOT_PASSWORD: api
+      MYSQL_DATABASE: api
+    ports:
+      - "3307:3306"
+
+volumes:
+  mysql:
