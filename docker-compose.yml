@@ -5,6 +5,9 @@ services:
     command: pm2-dev ./app/app.js
     environment:
       NODE_ENV: development
+      MYSQL_ROOT_PASSWORD: api
+      MYSQL_DATABASE: api
+      MYSQL_ROOT_USERNAME: root
     depends_on:
       - mysql
     ports:
@@ -20,6 +23,7 @@ services:
     environment: 
       MYSQL_ROOT_PASSWORD: api
       MYSQL_DATABASE: api
+      MYSQL_ROOT_USERNAME: root
     ports:
       - "3307:3306"
 
