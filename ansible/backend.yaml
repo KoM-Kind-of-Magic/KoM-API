@@ -1,0 +1,28 @@
+- hosts: back
+  become: yes
+  tasks:
+    - name: Install pkg
+      apt:
+        pkg:
+          - nodejs
+          - npm
+          - git
+        state: present
+        update_cache: yes
+
+
+    - name: Example clone of a single branch
+      ansible.builtin.git:
+        repo: https://github.com/KoM-Kind-of-Magic/KoM-API
+        dest: code
+        single_branch: yes
+        version: master
+    
+    - name: Install pm2
+      shell: npm install -g pm2   
+
+    - name: Install node modules
+      shell: cd code && cd app && npm install
+
+    - name: Launch server
+      shell: cd code && pm2 start "node app/app.js"
