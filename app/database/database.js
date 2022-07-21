@@ -421,6 +421,50 @@ const User = sequelize.define('user', {
   freezeTableName: true,
 });
 
+const Deck = sequelize.define('deck', {
+  deck_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  format: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },        
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: Sequelize.NOW
+  },         
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  user_id: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: 'user',
+      key: 'id',
+    }
+  },
+  representing_card_uuid: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: 'cards',
+      key: 'uuid',
+    }
+  },
+}, {
+  freezeTableName: true,
+});
 
 
 module.exports = {
@@ -494,6 +538,24 @@ module.exports = {
   getUsers: (page=1, resultsCount=20) => {
     return new Promise((resolve, reject) => {
       User
+        .scope('excludeCreatedAtUpdateAt')
+        .findAll({offset: (page-1)*resultsCount, limit: resultsCount})
+        .then((data) => {resolve(data)})
+        .catch((error) => {reject(error)})
+    })
+  },
+
+
+  /**
+   * get decks in the database
+   * @author Pierre-Louis NICOLAS <pierre-louis.nicolas@epitech.eu>
+   * @param  {Number} [page=1] Page currently displaying
+   * @param  {Number} [resultsCount=20] Amount of results par page
+   * @return {Object[]} An array of objects containing data
+   */
+  getDecks: (page=1, resultsCount=20) => {
+    return new Promise((resolve, reject) => {
+      Deck
         .scope('excludeCreatedAtUpdateAt')
         .findAll({offset: (page-1)*resultsCount, limit: resultsCount})
         .then((data) => {resolve(data)})
