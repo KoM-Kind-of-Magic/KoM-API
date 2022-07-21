@@ -387,9 +387,39 @@ const Cards = sequelize.define('cards', {
     allowNull: true
   },
 }, {
-  // Other model options go here
+  freezeTableName: true,
 });
 
+const User = sequelize.define('user', {
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true
+  },
+  nickname: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },        
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: Sequelize.NOW
+  },         
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }
+}, {
+  freezeTableName: true,
+});
 
 
 
@@ -450,6 +480,24 @@ module.exports = {
     
     return new Promise((resolve, reject) => {
       reject("🚧 Route in construction 🚧")
+    })
+  },
+
+
+  /**
+   * get users in the database
+   * @author Pierre-Louis NICOLAS <pierre-louis.nicolas@epitech.eu>
+   * @param  {Number} [page=1] Page currently displaying
+   * @param  {Number} [resultsCount=20] Amount of results par page
+   * @return {Object[]} An array of objects containing data
+   */
+  getUsers: (page=1, resultsCount=20) => {
+    return new Promise((resolve, reject) => {
+      User
+        .scope('excludeCreatedAtUpdateAt')
+        .findAll({offset: (page-1)*resultsCount, limit: resultsCount})
+        .then((data) => {resolve(data)})
+        .catch((error) => {reject(error)})
     })
   },
 }
