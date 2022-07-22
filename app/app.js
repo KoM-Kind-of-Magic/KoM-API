@@ -1,34 +1,12 @@
-require('dotenv').config();
-const express = require('express')
-const app = express()
-const port = 8089;
+require("dotenv").config();
+require("./conf/database").connect();
+const express = require("express");
+const exampleRoutes = require("./conf/routes/test.routes");
+const app = express();
+const ExampleController = require("./controller/test.controller");
+const res = require("express/lib/response");
 
-const database = require('./database/database')
+app.use(express.json());
+app.use(exampleRoutes);
 
-app.get('/cards', (req, res) => {
-  database.getCards()
-  .then((data) => {
-    res.json({'status': 'success', 'data': data})
-  })
-  .catch((error) => {
-    res.json({'status': 'failure', 'error': error})
-  })
-})
-
-app.get('/cards/search', (req, res) => {
-  database.searchCards()
-  .then((data) => {
-    res.json({'status': 'success', 'data': data})
-  })
-  .catch((error) => {
-    res.json({'status': 'failure', 'error': error})
-  })
-})
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+module.exports = app;
