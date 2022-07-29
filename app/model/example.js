@@ -1,4 +1,3 @@
-// trouver l'équivalent
 const database = require('./database/database')
 
 const ExampleSchema = new database.Schema({

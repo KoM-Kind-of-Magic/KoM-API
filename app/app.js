@@ -1,12 +1,20 @@
 require("dotenv").config();
-require("./conf/database").connect();
 const express = require("express");
-const exampleRoutes = require("./conf/routes/test.routes");
 const app = express();
-const ExampleController = require("./controller/test.controller");
-const res = require("express/lib/response");
+
+const sequelize = require("./conf/database")
+try {
+  sequelize.authenticate();
+  console.log('CONNECTED');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
+
+const indexRoutes = require("./routes/index.routes");
+const cardsRoutes = require("./routes/cards.routes");
 
 app.use(express.json());
-app.use(exampleRoutes);
+app.use('/', indexRoutes);
+app.use('/cards', cardsRoutes);
 
 module.exports = app;
