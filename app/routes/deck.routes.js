@@ -6,4 +6,11 @@ const deckController = require("../controller/deck.controller");
 router.get("/", deckController.deck);
 router.get("/fields", deckController.fields);
 
+// POST	Create
+router.post("/", deckController.create);
+// GET	Read
+// PUT	Update/Replace
+// PATCH	Update/Modify
+// DELETE	Delete
+
 module.exports = router;
