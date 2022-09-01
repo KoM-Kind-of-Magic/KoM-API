@@ -349,7 +349,8 @@ const Cards = sequelize.define('cards', {
   },
   uuid: {
     type: DataTypes.UUID,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   variations: {
     type: DataTypes.STRING,

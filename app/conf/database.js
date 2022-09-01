@@ -11,14 +11,11 @@ const sequelize = new Sequelize(
     host: 'mysql',
     dialect: 'mysql',
     define: {
-      scopes: {
-        excludeCreatedAtUpdateAt: {
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        }
-      },
       timestamps: false 
     }
   }
 );
+
+
 
 module.exports = sequelize

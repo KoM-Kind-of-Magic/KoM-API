@@ -4,7 +4,7 @@ services:
     build:
       context: ./app
       dockerfile: .Dockerfile
-    command: pm2-dev ./app/server.js
+    command: pm2-dev ./app/app.js
     environment:
       NODE_ENV: development
       DB_HOST: mysql

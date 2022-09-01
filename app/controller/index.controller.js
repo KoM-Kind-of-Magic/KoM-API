@@ -1,3 +1,3 @@
 exports.index = async (req, res) => {
-  res.json('Hello World!');
+  res.json({'status': 200, 'message': "Hello world"});
 };
