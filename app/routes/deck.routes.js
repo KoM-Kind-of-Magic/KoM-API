@@ -12,5 +12,6 @@ router.post("/", deckController.create);
 // PUT	Update/Replace
 // PATCH	Update/Modify
 // DELETE	Delete
+router.delete("/:id", deckController.delete);
 
 module.exports = router;

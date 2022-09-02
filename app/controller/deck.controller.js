@@ -15,25 +15,42 @@ exports.fields = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  try {
-    const newDeck = Deck.build({
-      name: "Jane",
-      format: "Jane",
-      type: "Jane",
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      user_id: 0,
-      representing_card_uuid: null,
-    })
-    if(newDeck instanceof Deck) {
-      await newDeck.save();
-      console.log('Deck was saved to the database!')
-      res.json({'status': 201, 'details': 'Deck created'});
-    }
-    else {
-      res.json({'status': 500, 'error': 'Error while creating Deck.'})
-    }
-  } catch (error) {
-    res.json({'status': 500, 'error': error})
+  const id = req.body.deck_id;
+  if(id !== undefined || id == null) 
+  {
+    const deck = new Deck({
+      deck_id: id,
+      name: req.body.name,
+    });
+    await deck.save();
+    res.json(deck);
+  } else {
+    res.json("id incorrect");
   }
+};
+
+exports.delete = async (req, res) => {
+    const id = req.params.id;
+    Deck.destroy({
+      where: {deck_id: id}
+    })
+      .then((deck) => {
+        if(!deck) {
+          res.status(404).send({
+            message: "Deck not found with id " + req.params.id,
+          });
+        }
+        res.json({ message: "Deck deleted successfully!"});
+      })
+    .catch((error) => {
+      if (error.kind === "ObjectId" || error.name === "NotFound")
+      {
+        return res.status(404).send({
+          message: "Deck not found with id " + req.params.id,
+        });
+      }
+      return res.status(500).send({
+        message: "Could not delete Deck with id " + req.params.id,
+      });
+    });
 };

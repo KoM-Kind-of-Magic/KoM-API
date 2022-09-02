@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const PORT = process.env.NODE_DOCKER_PORT || 8080;
+const PORT = process.env.NODE_DOCKER_PORT || 8090;
 
 app.listen(PORT, () => {
     console.log(`Server Running on port ${PORT}`);
