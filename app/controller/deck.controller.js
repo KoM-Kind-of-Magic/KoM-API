@@ -55,6 +55,30 @@ exports.delete = async (req, res) => {
     });
 };
 
+exports.deck_by_id = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id)
+    if(isNaN(id)) {
+      res.json({'status': 500, 'error': 'Id given is not a number.'})
+    }
+    else {
+      Deck
+      .findByPk(id)
+      .then((data) => {
+        if(data !== null) {
+          res.json({'status': 200, 'data': data});
+        }
+        else {
+          res.json({'status': 404, 'error': "Deck not found"})
+        }
+      })
+      .catch((error) => {res.json({'status': 500, 'error': error})})
+    }
+  } catch (error) {
+    res.json({'status': 500, 'error': error})
+  }
+};
+
 exports.decks_by_user_id = async (req, res) => {
   try {
     const user_id = parseInt(req.params.user_id)
