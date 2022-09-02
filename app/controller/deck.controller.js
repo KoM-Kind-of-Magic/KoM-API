@@ -47,7 +47,14 @@ exports.deck_by_id = async (req, res) => {
     else {
       Deck
       .findByPk(id)
-      .then((data) => {res.json({'status': 200, 'data': data});})
+      .then((data) => {
+        if(data !== null) {
+          res.json({'status': 200, 'data': data});
+        }
+        else {
+          res.json({'status': 404, 'error': "Deck not found"})
+        }
+      })
       .catch((error) => {res.json({'status': 500, 'error': error})})
     }
   } catch (error) {
