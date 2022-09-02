@@ -13,5 +13,6 @@ router.get("/:id", deckController.deck_by_id);
 // PUT	Update/Replace
 // PATCH	Update/Modify
 // DELETE	Delete
+router.delete("/:id", deckController.delete);
 
 module.exports = router;
