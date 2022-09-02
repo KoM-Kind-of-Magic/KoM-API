@@ -37,3 +37,20 @@ exports.create = async (req, res) => {
     res.json({'status': 500, 'error': error})
   }
 };
+
+exports.deck_by_id = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id)
+    if(isNaN(id)) {
+      res.json({'status': 500, 'error': 'Id given is not a number.'})
+    }
+    else {
+      Deck
+      .findByPk(id)
+      .then((data) => {res.json({'status': 200, 'data': data});})
+      .catch((error) => {res.json({'status': 500, 'error': error})})
+    }
+  } catch (error) {
+    res.json({'status': 500, 'error': error})
+  }
+};
