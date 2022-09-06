@@ -23,10 +23,42 @@ exports.create = async (req, res) => {
       name: req.body.name,
     });
     await deck.save();
-    res.json(deck);
+    res.json({'status': 201, 'data': deck, 'desc': 'created'});
   } else {
-    res.json("id incorrect");
+    res.json({'status': 500, 'desc': 'id incorrect'});
   }
+};
+
+exports.patch = async (req, res) => {
+  const changes = req.body;
+  const id = req.params.id;
+  if(id === undefined || id === null) {
+    res.json({'status': 500, 'desc': 'id incorrect'})
+  }
+  Deck
+    .findByPk(id)
+    .then((deck) => {
+      if(data !== null) {
+        Deck.update(
+          { name: changes.name ?? deck.name },
+          { format: changes.format ?? deck.format },
+          { type: changes.type ?? deck.type },
+          { where: { deck_id: id } }
+        )
+        .success(() =>
+          res.json({'status': 204, 'desc': 'Deck updated'})
+        )
+        .error(err =>
+          res.json({'status': 500, 'error': err})
+        )
+      }
+      else {
+        res.json({'status': 404, 'error': "Deck not found"})
+      }
+    })
+    .catch((error) => {
+      res.json({'status': 500, 'error': error})
+    })
 };
 
 exports.delete = async (req, res) => {
