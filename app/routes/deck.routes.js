@@ -11,8 +11,9 @@ router.post("/", deckController.create);
 // GET	Read
 router.get("/:id", deckController.deck_by_id);
 // PUT	Update/Replace
+router.put("/:id", deckController.update);
 // PATCH	Update/Modify
-router.patch("/:id", deckController.patch);
+// router.patch("/:id", deckController.patch);
 // DELETE	Delete
 router.delete("/:id", deckController.delete);
 

@@ -131,3 +131,19 @@ exports.decks_by_user_id = async (req, res) => {
     res.json({'status': 500, 'error': error})
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updated = await Deck.update(req.body, {
+      where: { deck_id: id}
+    });
+    if(updated) {
+      const updatedDeck = await Deck.findOne({ where: { deck_id: id} });
+      return res.status(200).json({ deck: updatedDeck});
+    }
+    throw new Error('Deck not found');
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
