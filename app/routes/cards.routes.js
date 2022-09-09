@@ -9,6 +9,6 @@ router.get("/", cardsController.cards);// for the moment this route only retriev
 router.get("/:uuid", cardsController.card_by_uuid);
 
 // GET	Search
-// router.get("/search", cardsController.search);
+router.get("/search", cardsController.search);
 
 module.exports = router;
