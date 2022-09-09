@@ -3,16 +3,25 @@ const Deck = require('../models/deck')
 exports.deck = async (req, res) => {
   Deck
     .findAll({offset: 0, limit: 20})
-    .then((data) => {res.json({'status': 200, 'data': data});})
-    .catch((error) => {res.json({'status': 500, 'error': error})})
+    .then((data) => {
+      return res.status(200).send({
+        message: "decks are stored in data key",
+        data: data,
+      });
+    })
+    .catch((error) => {
+      return res.status(500).send({
+        message: error.message,
+      });
+    })
 };
 
-exports.fields = async (req, res) => {
-  Deck
-    .describe()
-    .then((data) => {res.json({'status': 200, 'data': data});})
-    .catch((error) => {res.json({'status': 500, 'error': error})})
-};
+// exports.fields = async (req, res) => {
+//   Deck
+//     .describe()
+//     .then((data) => {res.json({'status': 200, 'data': data});})
+//     .catch((error) => {res.json({'status': 500, 'error': error})})
+// };
 
 exports.create = async (req, res) => {
   const id = req.body.deck_id;
@@ -23,9 +32,14 @@ exports.create = async (req, res) => {
       name: req.body.name,
     });
     await deck.save();
-    res.json({'status': 201, 'data': deck, 'desc': 'created'});
+    return res.status(201).send({
+      message: "created",
+      data: deck,
+    });
   } else {
-    res.json({'status': 500, 'desc': 'id incorrect'});
+    return res.status(500).send({
+      message: 'id incorrect',
+    });
   }
 };
 
@@ -33,7 +47,9 @@ exports.patch = async (req, res) => {
   const changes = req.body;
   const id = req.params.id;
   if(id === undefined || id === null) {
-    res.json({'status': 500, 'desc': 'id incorrect'})
+    return res.status(500).send({
+      message: 'id incorrect',
+    });
   }
   Deck
     .findByPk(id)
@@ -45,19 +61,27 @@ exports.patch = async (req, res) => {
           { type: changes.type ?? deck.type },
           { where: { deck_id: id } }
         )
-        .success(() =>
-          res.json({'status': 204, 'desc': 'Deck updated'})
-        )
-        .error(err =>
-          res.json({'status': 500, 'error': err})
-        )
+        .success(() => {
+          return res.status(204).send({
+            message: "Deck updated",
+          });
+        })
+        .error(err => {
+          return res.status(500).send({
+            message: err,
+          });
+        })
       }
       else {
-        res.json({'status': 404, 'error': "Deck not found"})
+        return res.status(404).send({
+          message: 'Deck not found',
+        });
       }
     })
     .catch((error) => {
-      res.json({'status': 500, 'error': error})
+      return res.status(500).send({
+        message: error.message,
+      });
     })
 };
 
@@ -72,7 +96,9 @@ exports.delete = async (req, res) => {
             message: "Deck not found with id " + req.params.id,
           });
         }
-        res.json({ message: "Deck deleted successfully!"});
+        res.status(200).send({
+          message: "Deck deleted successfully!",
+        });
       })
     .catch((error) => {
       if (error.kind === "ObjectId" || error.name === "NotFound")
@@ -91,23 +117,36 @@ exports.deck_by_id = async (req, res) => {
   try {
     const id = parseInt(req.params.id)
     if(isNaN(id)) {
-      res.json({'status': 500, 'error': 'Id given is not a number.'})
+      return res.status(500).send({
+        message: "Id given is not a number",
+      });
     }
     else {
       Deck
       .findByPk(id)
       .then((data) => {
         if(data !== null) {
-          res.json({'status': 200, 'data': data});
+          return res.status(200).send({
+            message: "Deck stored in data key",
+            data: data
+          });
         }
         else {
-          res.json({'status': 404, 'error': "Deck not found"})
+          return res.status(404).send({
+            message: "Deck not found",
+          });
         }
       })
-      .catch((error) => {res.json({'status': 500, 'error': error})})
+      .catch((error) => {
+        return res.status(500).send({
+          message: error.message,
+        });
+      })
     }
   } catch (error) {
-    res.json({'status': 500, 'error': error})
+    return res.status(500).send({
+      message: error.message,
+    });
   }
 };
 
@@ -115,7 +154,9 @@ exports.decks_by_user_id = async (req, res) => {
   try {
     const user_id = parseInt(req.params.user_id)
     if(isNaN(id)) {
-      res.json({'status': 500, 'error': 'Id given is not a number.'})
+      return res.status(500).send({
+        message: "Id given is not a number.",
+      });
     }
     else {
       Deck
@@ -124,11 +165,22 @@ exports.decks_by_user_id = async (req, res) => {
             user_id: user_id
           }
         })
-        .then((data) => {res.json({'status': 200, 'data': data});})
-        .catch((error) => {res.json({'status': 500, 'error': error})})
+        .then((data) => {
+          return res.status(200).send({
+            message: "Deck stored in data key",
+            data: data
+          });
+        })
+        .catch((error) => {
+          return res.status(500).send({
+            message: error.message,
+          });
+        })
     }
   } catch (error) {
-    res.json({'status': 500, 'error': error})
+    return res.status(500).send({
+      message: error.message,
+    });
   }
 };
 
@@ -140,10 +192,15 @@ exports.update = async (req, res) => {
     });
     if(updated) {
       const updatedDeck = await Deck.findOne({ where: { deck_id: id} });
-      return res.status(200).json({ deck: updatedDeck});
+      return res.status(200).send({
+        message: "Deck stored in data key",
+        data: updatedDeck
+      });
     }
     throw new Error('Deck not found');
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(500).send({
+      message: error.message,
+    });
   }
 };
