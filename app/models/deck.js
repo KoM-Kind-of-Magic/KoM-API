@@ -4,8 +4,8 @@ const { DataTypes } = require('sequelize');
 const Deck = sequelize.define('deck', {
   deck_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    autoIncrement: true
   },
   name: {
     type: DataTypes.STRING,
