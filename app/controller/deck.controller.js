@@ -1,4 +1,5 @@
 const Deck = require('../models/deck')
+const Card = require('../models/cards')
 
 exports.deck = async (req, res) => {
   Deck
@@ -24,21 +25,21 @@ exports.deck = async (req, res) => {
 // };
 
 exports.create = async (req, res) => {
-  const id = req.body.deck_id;
-  if(id !== undefined || id == null) 
-  {
+  try{
     const deck = new Deck({
-      deck_id: id,
       name: req.body.name,
     });
+
     await deck.save();
+
     return res.status(201).send({
       message: "created",
       data: deck,
     });
-  } else {
+  } catch(error)
+  {
     return res.status(500).send({
-      message: 'id incorrect',
+      message: error,
     });
   }
 };
@@ -204,3 +205,28 @@ exports.update = async (req, res) => {
     });
   }
 };
+
+exports.remove_card = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const card_uuid = req.params.uuid;
+
+    console.log(card_uuid);
+
+    if(id === null || id === undefined || id == ":id" || card_uuid === null || card_uuid === undefined || card_uuid == ":uuid")
+    {
+      return res.status(500).send({
+        message: "Id non valide ou UUID de carte non valide : ",
+      });      
+    }
+    else {
+      return res.status(200).send({
+        message: "Id de deck testé : " + id + " UUID de carte testé : " + card_uuid,
+      });
+    }
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }
+}

@@ -16,5 +16,7 @@ router.put("/:id", deckController.update);
 router.patch("/:id", deckController.patch);
 // DELETE	Delete
 router.delete("/:id", deckController.delete);
+// Remove DELETE /deck/:deck_id/cards/:card_uuid -> need to make it on deck controller side
+router.delete("/:id/cards/:uuid", deckController.remove_card)
 
 module.exports = router;
