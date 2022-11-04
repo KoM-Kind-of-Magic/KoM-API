@@ -211,7 +211,24 @@ exports.remove_card = async (req, res) => {
     const id = req.params.id;
     const card_uuid = req.params.uuid;
 
-    console.log(card_uuid);
+    // On doit d'abord checker si l'id du deck existe bien
+    const deck_to_update = await Deck.findByPk(id);
+    // On doit faire évoluer les conditions : Si la carte existe dans la bdd
+    const card_exist = await Card.findOne({ where: { uuid: card_uuid } });
+
+    // si pas de deck associé
+    if(!deck_to_update)
+    {
+      return res.status(500).send({
+        message: "Pas de deck associé à cette id"
+      });
+    }
+    if(!card_exist)
+    {
+      return res.status(500).send({
+        message: "Pas de carte associé à cette uuid"
+      });
+    }
 
     if(id === null || id === undefined || id == ":id" || card_uuid === null || card_uuid === undefined || card_uuid == ":uuid")
     {
@@ -220,6 +237,9 @@ exports.remove_card = async (req, res) => {
       });      
     }
     else {
+      //  on verra pour le delete
+      const updated = await Deck.update( { representing_card_uuid: card_uuid} ,{ where: { deck_id: id} });
+
       return res.status(200).send({
         message: "Id de deck testé : " + id + " UUID de carte testé : " + card_uuid,
       });
@@ -229,4 +249,46 @@ exports.remove_card = async (req, res) => {
       message: error.message,
     });
   }
+}
+
+exports.add_card = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const card_uuid = req.params.uuid;
+
+    // On doit d'abord checker si l'id du deck existe bien
+    const deck_to_update = await Deck.findByPk(id);
+    // On doit faire évoluer les conditions : Si la carte existe dans la bdd
+    const card_exist = await Card.findOne({ where: { uuid: card_uuid } });
+
+    // si pas de deck associé
+    if(!deck_to_update)
+    {
+      return res.status(500).send({
+        message: "Pas de deck associé à cette id"
+      });
+    }
+    if(!card_exist)
+    {
+      return res.status(500).send({
+        message: "Pas de carte associé à cette uuid"
+      });
+    }
+
+    // Si la carte existe & Si y'a un deck associé à l'id
+    if(card_exist && deck_to_update)
+    {
+      // ajouter des cartes
+      // mais pour ça faut déjà une array qui va stocker des cartes
+      // Deck.update({ })
+      return res.status(200).send({
+        message: "UUID de carte  : OK ",
+      });         
+    }
+
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }  
 }

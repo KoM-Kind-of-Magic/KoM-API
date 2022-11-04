@@ -18,5 +18,7 @@ router.patch("/:id", deckController.patch);
 router.delete("/:id", deckController.delete);
 // Remove DELETE /deck/:deck_id/cards/:card_uuid -> need to make it on deck controller side
 router.delete("/:id/cards/:uuid", deckController.remove_card)
+// POST /deck/:deck_id/cards/:card_uuid -> need to make it on deck controller side
+router.post("/:id/cards/:uuid", deckController.add_card);
 
 module.exports = router;
