@@ -28,6 +28,8 @@ exports.create = async (req, res) => {
   try{
     const deck = new Deck({
       name: req.body.name,
+      format: req.body.format,
+      type: req.body.type,
     });
 
     await deck.save();
