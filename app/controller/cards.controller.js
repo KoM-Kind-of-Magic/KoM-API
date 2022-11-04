@@ -112,5 +112,4 @@ exports.search = async (req, res) => {
       message: error.message,
     });
   }
-  
 };
