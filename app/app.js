@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+var cors = require('cors');
 const app = express();
 const PORT = process.env.NODE_DOCKER_PORT || 8090;
 
@@ -11,7 +12,7 @@ const sequelize = require("./conf/database")
 try {
   sequelize.authenticate();
   console.log('CONNECTED');
-  sequelize.sync({ force: true }).then(() => {
+  sequelize.sync({ force: false }).then(() => {
     console.log(`Database & tables created!`);
   })
   .catch((error) => {
@@ -27,6 +28,9 @@ const userRoutes = require("./routes/user.routes.js");
 const deckRoutes = require("./routes/deck.routes.js");
 
 app.use(express.json());
+app.use(cors({
+  origin: '*'
+}));
 app.use('/', indexRoutes);
 app.use('/cards', cardsRoutes);
 app.use('/user', userRoutes);

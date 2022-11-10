@@ -18,7 +18,17 @@ const Deck = sequelize.define('deck', {
   type: {
     type: DataTypes.STRING,
     allowNull: true
-  },        
+  },
+  cards: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    get() {
+      return this.getDataValue('cards') && this.getDataValue('cards').includes(';') ? this.getDataValue('cards').split(';') : []
+    },
+    set(val) {
+      this.setDataValue('cards',val.join(';'))
+    },
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: true,

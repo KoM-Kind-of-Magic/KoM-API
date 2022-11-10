@@ -8,6 +8,8 @@ router.get("/", deckController.deck); // for the moment this route only retrieve
 
 // POST	Create
 router.post("/", deckController.create);
+// GET All formats possible for a deck
+router.get("/formats", deckController.get_formats);
 // GET	Read
 router.get("/:id", deckController.deck_by_id);
 // PUT	Update/Replace

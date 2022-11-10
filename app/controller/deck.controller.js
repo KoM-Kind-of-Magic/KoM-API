@@ -1,5 +1,6 @@
 const Deck = require('../models/deck')
 const Card = require('../models/cards')
+const Legalities = require('../models/legalities')
 
 exports.deck = async (req, res) => {
   Deck
@@ -28,6 +29,8 @@ exports.create = async (req, res) => {
   try{
     const deck = new Deck({
       name: req.body.name,
+      format: req.body.format,
+      type: req.body.type,
     });
 
     await deck.save();
@@ -291,4 +294,10 @@ exports.add_card = async (req, res) => {
       message: error.message,
     });
   }  
-}
+};
+
+exports.get_formats = async (req, res) => {
+  return res.status(200).send({
+    data: Legalities.getAttributes().format.values,
+  });
+};
