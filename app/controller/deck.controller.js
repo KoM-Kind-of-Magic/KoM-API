@@ -6,7 +6,6 @@ exports.deck = async (req, res) => {
   Deck
     .findAll({offset: 0, limit: 20})
     .then((data) => {
-      data.cards = data.cards ? JSON.parse(data.cards) : []
       return res.status(200).send({
         message: "decks are stored in data key",
         data: data,
