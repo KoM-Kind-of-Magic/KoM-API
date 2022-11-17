@@ -1,0 +1,2 @@
+[back]
+backend ansible_host=ec2-15-188-111-204.eu-west-3.compute.amazonaws.com ansible_port=22 ansible_user="admin" ansible_ssh_private_key_file=~/.ssh/aws

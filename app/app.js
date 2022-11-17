@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 var cors = require('cors');
 const app = express();
-const PORT = process.env.NODE_DOCKER_PORT || 8090;
+const PORT = process.env.NODE_PORT || 8090;
 
 app.listen(PORT, () => {
     console.log(`Server Running on port ${PORT}`);

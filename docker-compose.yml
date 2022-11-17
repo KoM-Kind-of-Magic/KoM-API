@@ -9,9 +9,9 @@ services:
       NODE_ENV: development
       DB_HOST: mysql
       DB_USER: $MYSQLDB_USER
-      DB_PASSWORD: $MYSQLDB_ROOT_PASSWORD
+      DB_PASSWORD: $MYSQLDB_PASSWORD
       DB_NAME: $MYSQLDB_DATABASE
-      DB_PORT: $MYSQLDB_DOCKER_PORT
+      DB_PORT: $MYSQLDB_PORT
     depends_on:
       - mysql
     env_file: ./.env

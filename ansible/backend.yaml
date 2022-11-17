@@ -1,0 +1,70 @@
+- hosts: back
+  become: yes
+  tasks:
+    - name: Install pkg
+      apt:
+        pkg:
+          - git
+          - nodejs
+          - npm
+          - wget
+          - mariadb-server
+          - python3-mysqldb
+        state: latest
+        update_cache: yes
+
+    - name: Create database user with all database privileges
+      vars:
+        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+        MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+      community.mysql.mysql_user:
+        name: "{{ MYSQLDB_USER }}"
+        password: "{{ MYSQLDB_PASSWORD }}"
+        priv: '*.*:ALL'          
+        state: present
+
+    - name: Create a new database
+      vars:
+        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+      community.mysql.mysql_db:
+        name: "{{MYSQLDB_DATABASE}}"
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+    - name: Pull project
+      become_user: admin
+      ansible.builtin.git:
+        repo: https://github.com/KoM-Kind-of-Magic/KoM-API
+        dest: api
+        force: yes
+        version: dev
+
+    - name: Copy using inline content
+      ansible.builtin.copy:
+        content: 'prefix=${HOME}/.npm-packages'
+        dest: /.npmrc
+
+    - name: Install node modules
+      become_user: admin
+      shell: cd api && npm i
+
+    # - name: Build
+    #   become_user: admin
+    #   shell: cd code && npm run build
+
+    # - name: copy the nginx config file and restart nginx
+    #   copy:
+    #     src: ./nginx-site.cfg
+    #     dest: /etc/nginx/sites-available/nginx-site.cfg
+    #   become: yes
+      
+    # - name: create symlink
+    #   file:
+    #     src: /etc/nginx/sites-available/nginx-site.cfg
+    #     dest: /etc/nginx/sites-enabled/default
+    #     state: link
+    #   become: yes
+    # - name: start nginx
+    #   service:
+    #       name: nginx
+    #       state: restarted

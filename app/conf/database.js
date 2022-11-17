@@ -6,10 +6,10 @@ const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize(
   process.env.MYSQLDB_DATABASE,
   process.env.MYSQLDB_USER,
-  process.env.MYSQLDB_ROOT_PASSWORD, 
+  process.env.MYSQLDB_PASSWORD, 
   {
     host: '127.0.0.1',
-    dialect: 'mysql',
+    dialect: 'mariadb',
     define: {
       timestamps: false 
     }
