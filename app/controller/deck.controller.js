@@ -30,7 +30,7 @@ exports.create = async (req, res) => {
     const deck = new Deck({
       name: req.body.name,
       format: req.body.format,
-      type: req.body.type,
+      description: req.body.description,
     });
 
     await deck.save();
@@ -63,6 +63,7 @@ exports.patch = async (req, res) => {
           { name: changes.name ?? deck.name },
           { format: changes.format ?? deck.format },
           { type: changes.type ?? deck.type },
+          { description: changes.description ?? deck.description },
           { where: { deck_id: id } }
         )
         .success(() => {

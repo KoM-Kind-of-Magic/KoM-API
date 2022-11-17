@@ -19,6 +19,10 @@ const Deck = sequelize.define('deck', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   cards: {
     type: DataTypes.STRING,
     allowNull: true,
