@@ -30,6 +30,7 @@ exports.create = async (req, res) => {
     const deck = new Deck({
       name: req.body.name,
       format: req.body.format,
+      type: req.body.type,
       description: req.body.description,
     });
 
@@ -58,7 +59,7 @@ exports.patch = async (req, res) => {
   Deck
     .findByPk(id)
     .then((deck) => {
-      if(data !== null) {
+      if(deck !== null) {
         Deck.update(
           { name: changes.name ?? deck.name },
           { format: changes.format ?? deck.format },
