@@ -61,20 +61,19 @@ exports.patch = async (req, res) => {
     .then((deck) => {
       if(deck !== null) {
         Deck.update(
-          { name: changes.name ?? deck.name },
-          { format: changes.format ?? deck.format },
-          { type: changes.type ?? deck.type },
-          { description: changes.description ?? deck.description },
-          { where: { deck_id: id } }
+          req.body,
+          {
+            where: {
+              deck_id: id
+            }
+          }
         )
-        .success(() => {
-          return res.status(204).send({
-            message: "Deck updated",
-          });
+        .then(() => {
+          return res.status(204).send();
         })
-        .error(err => {
+        .catch((error) => {
           return res.status(500).send({
-            message: err,
+            message: error.message,
           });
         })
       }
