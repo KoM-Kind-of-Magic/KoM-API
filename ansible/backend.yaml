@@ -8,6 +8,7 @@
           - nodejs
           - npm
           - wget
+          - nginx
           - mariadb-server
           - python3-mysqldb
         state: latest
@@ -20,7 +21,7 @@
       community.mysql.mysql_user:
         name: "{{ MYSQLDB_USER }}"
         password: "{{ MYSQLDB_PASSWORD }}"
-        priv: '*.*:ALL'          
+        priv: '*.*:ALL'       
         state: present
 
     - name: Create a new database
@@ -44,27 +45,28 @@
         content: 'prefix=${HOME}/.npm-packages'
         dest: /.npmrc
 
-    - name: Install node modules
-      become_user: admin
-      shell: cd api && npm i
-
-    # - name: Build
-    #   become_user: admin
-    #   shell: cd code && npm run build
-
-    # - name: copy the nginx config file and restart nginx
-    #   copy:
-    #     src: ./nginx-site.cfg
-    #     dest: /etc/nginx/sites-available/nginx-site.cfg
-    #   become: yes
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: ./nginx-site.cfg
+        dest: /etc/nginx/sites-available/nginx-site.cfg
+      become: yes
       
-    # - name: create symlink
-    #   file:
-    #     src: /etc/nginx/sites-available/nginx-site.cfg
-    #     dest: /etc/nginx/sites-enabled/default
-    #     state: link
-    #   become: yes
-    # - name: start nginx
-    #   service:
-    #       name: nginx
-    #       state: restarted
+    - name: create symlink
+      file:
+        src: /etc/nginx/sites-available/nginx-site.cfg
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+
+    - name: start nginx
+      service:
+          name: nginx
+          state: restarted
+
+    - name: Install n
+      become_user: admin
+      shell: sudo npm install -g n pm2 && sudo n 16 && cd api && npm install && pm2 restart app/app.js
+      environment:
+        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"

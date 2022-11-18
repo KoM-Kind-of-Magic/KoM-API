@@ -4,7 +4,7 @@ var cors = require('cors');
 const app = express();
 const PORT = process.env.NODE_PORT || 8090;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server Running on port ${PORT}`);
 });
 
