@@ -31,13 +31,21 @@
         name: "{{ MYSQLDB_DATABASE }}"
         state: present
 
-    - name: Pull project
+    - name: Pull source code project
       become_user: admin
       ansible.builtin.git:
         repo: https://github.com/KoM-Kind-of-Magic/KoM-API
         dest: api
         force: yes
         version: dev
+
+    - name: Pull source code for db
+      become_user: admin
+      ansible.builtin.git:
+        repo: https://github.com/KoM-Kind-of-Magic/KoM-DB.git
+        dest: db
+        force: yes
+        version: master
 
     - name: Copy using inline content
       ansible.builtin.copy:
@@ -61,6 +69,13 @@
       service:
           name: nginx
           state: restarted
+    - name: Feed database
+      become_user: admin
+      shell: sudo ./db/import.sh
+      environment:
+        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
 
     - name: Install n
       become_user: admin
