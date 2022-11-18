@@ -64,7 +64,7 @@
 
     - name: Install n
       become_user: admin
-      shell: sudo npm install -g n pm2 && sudo n 16 && cd api && npm install && pm2 start app/app.js
+      shell: sudo npm install -g n pm2 && sudo n 16 && cd api && npm install && pm2 restart app/app.js
       environment:
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
