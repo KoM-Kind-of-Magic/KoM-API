@@ -18,8 +18,35 @@
     - name: Install pm2
       shell: npm install -g pm2
 
-    - name: Install node modules
-      shell: cd api && cd app && npm install
+    - name: Copy using inline content
+      ansible.builtin.copy:
+        content: 'prefix=${HOME}/.npm-packages'
+        dest: /.npmrc
+
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: ./nginx-site.cfg
+        dest: /etc/nginx/sites-available/nginx-site.cfg
+      become: yes
+      
+    - name: create symlink
+      file:
+        src: /etc/nginx/sites-available/nginx-site.cfg
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+
+    - name: start nginx
+      service:
+          name: nginx
+          state: restarted
+    - name: Feed database
+      # become_user: admin
+      shell: chmod u+x db/import.sh && ./db/import.sh
+      environment:
+        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
 
     - name: Launch server
       shell: cd code && pm2 start "node app/app.js"
