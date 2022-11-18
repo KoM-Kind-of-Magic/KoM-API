@@ -54,7 +54,7 @@ exports.card_by_uuid = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    const name = req.body.name.toLowerCase();
+    const name = (req.body.name ?? "").toLowerCase();
     const text = (req.body.text ?? "").toLowerCase();
     const page = req.body.page ?? 1;
     const results = req.body.results ?? 20;
