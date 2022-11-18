@@ -64,5 +64,9 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.HOSTNAME_URL }} >> ~/.ssh/known_hosts
       - name: Run playbook
+        env:
+          MYSQLDB_USER: ${{ secrets.MYSQLDB_USER }}
+          MYSQLDB_ROOT_PASSWORD: ${{ secrets.MYSQLDB_ROOT_PASSWORD }}
+          MYSQLDB_DATABASE: ${{ secrets.MYSQLDB_DATABASE }}
         run: |
           ansible-playbook -i ansible/inventory/aws/hosts ansible/backend.yaml
