@@ -70,8 +70,8 @@
           name: nginx
           state: restarted
     - name: Feed database
-      # become_user: admin
-      shell: chmod u+x db/import.sh && ./db/import.sh
+      become_user: admin
+      shell: chmod u+x db/import.sh && bash ./db/import.sh
       environment:
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
