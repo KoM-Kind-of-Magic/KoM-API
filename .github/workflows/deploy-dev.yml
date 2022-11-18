@@ -1,0 +1,66 @@
+name: DEPLOY-DEV
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types: [closed]
+
+jobs: 
+  deploy-applications:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install terraform
+        run: sudo apt-get install -y software-properties-common gnupg2 curl
+      - name: Install dependencies
+        run: |
+          curl https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg
+          sudo install -o root -g root -m 644 hashicorp.gpg /etc/apt/trusted.gpg.d/
+          sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com focal main"
+          sudo apt update
+          sudo apt install terraform
+
+      - name: Terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_EIP_ASSOC_FRONTEND: ${{ secrets.TF_VAR_EIP_ASSOC_FRONTEND }}
+          TF_VAR_SSH_PUB_KEY: ${{ secrets.TF_VAR_SSH_PUB_KEY }}
+        run: |
+          pwd
+          ls -la 
+          cd terraform
+          terraform init
+
+      - name: Terraform apply
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_EIP_ASSOC_FRONTEND: ${{ secrets.TF_VAR_EIP_ASSOC_FRONTEND }}
+          TF_VAR_SSH_PUB_KEY: ${{ secrets.TF_VAR_SSH_PUB_KEY }}
+        run: |
+          cd terraform
+          terraform apply -auto-approve
+
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible==2.9.2 requests
+          ansible-galaxy collection install ansible.posix
+      - name: Install ssh key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.PRIVATE_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secrets.HOSTNAME_URL }}
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.HOSTNAME_URL }} >> ~/.ssh/known_hosts
+      - name: Run playbook
+        run: |
+          ansible-playbook -i ansible/inventory/aws/hosts ansible/frontend.yaml
