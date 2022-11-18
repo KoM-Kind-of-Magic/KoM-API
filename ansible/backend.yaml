@@ -71,7 +71,7 @@
           state: restarted
     - name: Feed database
       become_user: admin
-      shell: sudo ./db/import.sh
+      shell: chmod u+x db/import.sh && ./db/import.sh
       environment:
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
