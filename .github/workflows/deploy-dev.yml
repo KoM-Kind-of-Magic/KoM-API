@@ -63,4 +63,4 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.HOSTNAME_URL }} >> ~/.ssh/known_hosts
       - name: Run playbook
         run: |
-          ansible-playbook -i ansible/inventory/aws/hosts ansible/frontend.yaml
+          ansible-playbook -i ansible/inventory/aws/hosts ansible/backend.yaml
