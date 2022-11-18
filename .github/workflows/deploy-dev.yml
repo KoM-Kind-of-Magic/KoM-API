@@ -53,6 +53,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible==2.9.2 requests
           ansible-galaxy collection install ansible.posix
+          ansible-galaxy collection install community.mysql
       - name: Install ssh key
         uses: shimataro/ssh-key-action@v2
         with:
