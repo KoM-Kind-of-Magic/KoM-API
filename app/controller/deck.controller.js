@@ -254,39 +254,35 @@ exports.remove_card = async (req, res) => {
   }
 }
 
+// To do : verification sur chaque carte + append à la liste au lieu de remplacer à chaque fois
 exports.add_card = async (req, res) => {
   try {
-    const id = req.params.id;
-    const card_uuid = req.params.uuid;
+    const deck = req.params.id;
+    const updatedDeck = await Deck.findByPk(deck)
 
-    // On doit d'abord checker si l'id du deck existe bien
-    const deck_to_update = await Deck.findByPk(id);
-    // On doit faire évoluer les conditions : Si la carte existe dans la bdd
-    const card_exist = await Card.findOne({ where: { uuid: card_uuid } });
-
-    // si pas de deck associé
-    if(!deck_to_update)
-    {
-      return res.status(500).send({
-        message: "Pas de deck associé à cette id"
+    if(updatedDeck) {
+      const updated = await Deck.update({ cards: req.body.cards}, {
+        where: { deck_id: deck}
       });
-    }
-    if(!card_exist)
-    {
-      return res.status(500).send({
-        message: "Pas de carte associé à cette uuid"
-      });
-    }
 
-    // Si la carte existe & Si y'a un deck associé à l'id
-    if(card_exist && deck_to_update)
-    {
-      // ajouter des cartes
-      // mais pour ça faut déjà une array qui va stocker des cartes
-      // Deck.update({ })
-      return res.status(200).send({
-        message: "UUID de carte  : OK ",
-      });         
+      if(updated)
+      {
+        return res.status(200).send({
+          message: "OK",
+          data: updatedDeck
+        });      
+      }
+      else{
+        return res.status(500).send({
+          message: "Mauvaise uuid de carte",
+        }); 
+      }
+
+    }
+    else {
+      return res.status(500).send({
+        message: "Mauvaise id de deck",
+      });       
     }
 
   } catch (error) {
