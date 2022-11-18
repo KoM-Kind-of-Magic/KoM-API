@@ -28,9 +28,8 @@
       vars:
         MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
       community.mysql.mysql_db:
-        name: "{{MYSQLDB_DATABASE}}"
+        name: "{{ MYSQLDB_DATABASE }}"
         state: present
-        login_unix_socket: /run/mysqld/mysqld.sock
 
     - name: Pull project
       become_user: admin
