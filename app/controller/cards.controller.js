@@ -55,6 +55,7 @@ exports.card_by_uuid = async (req, res) => {
 exports.search = async (req, res) => {
   try {
     const name = req.body.name.toLowerCase();
+    const text = (req.body.text ?? "").toLowerCase();
     const page = req.body.page ?? 1;
     const results = req.body.results ?? 20;
     const types = req.body.types ?? "";
@@ -65,32 +66,30 @@ exports.search = async (req, res) => {
         offset: (page-1)*results, 
         limit: results,
         where: {
-          [Op.and]: [{
-            [Op.or]: [
-              Sequelize.where(
-                Sequelize.fn('lower', Sequelize.col('name')),
-                {
-                  $like: '%'+name+'%'
-                }
-              ),
-              Sequelize.where(
-                Sequelize.fn('lower', Sequelize.col('text')),
-                {
-                  $like: '%'+name+'%'
-                }
-              ),
-            ]},
+          [Op.and]: [
+            Sequelize.where(
+              Sequelize.fn('lower', Sequelize.col('name')),
+              {
+                [Op.like]: '%'+name+'%'
+              }
+            ),
+            Sequelize.where(
+              Sequelize.fn('lower', Sequelize.col('text')),
+              {
+                [Op.like]: '%'+text+'%'
+              }
+            ),
             Sequelize.where(
               Sequelize.fn('lower', Sequelize.col('types')),
               {
-                $like: '%'+types+'%'
+                [Op.like]: '%'+types+'%'
               }
             ),
             {manaValue: {[Op.between]: mana_value_range}},
             Sequelize.where(
               Sequelize.fn('lower', Sequelize.col('finishes')),
               {
-                $like: '%'+finishes+'%'
+                [Op.like]: '%'+finishes+'%'
               }
             ),
           ], 
@@ -98,7 +97,7 @@ exports.search = async (req, res) => {
       })
       .then((data) => {
         return res.status(200).send({
-          message: "decks are stored in data key",
+          message: "Cards are stored in data key",
           data: data,
         });
       })

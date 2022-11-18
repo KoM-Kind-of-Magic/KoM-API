@@ -6,7 +6,6 @@ exports.deck = async (req, res) => {
   Deck
     .findAll({offset: 0, limit: 20})
     .then((data) => {
-      data.cards = data.cards ? JSON.parse(data.cards) : []
       return res.status(200).send({
         message: "decks are stored in data key",
         data: data,
@@ -32,6 +31,7 @@ exports.create = async (req, res) => {
       name: req.body.name,
       format: req.body.format,
       type: req.body.type,
+      description: req.body.description,
     });
 
     await deck.save();
@@ -59,21 +59,21 @@ exports.patch = async (req, res) => {
   Deck
     .findByPk(id)
     .then((deck) => {
-      if(data !== null) {
+      if(deck !== null) {
         Deck.update(
-          { name: changes.name ?? deck.name },
-          { format: changes.format ?? deck.format },
-          { type: changes.type ?? deck.type },
-          { where: { deck_id: id } }
+          req.body,
+          {
+            where: {
+              deck_id: id
+            }
+          }
         )
-        .success(() => {
-          return res.status(204).send({
-            message: "Deck updated",
-          });
+        .then(() => {
+          return res.status(204).send();
         })
-        .error(err => {
+        .catch((error) => {
           return res.status(500).send({
-            message: err,
+            message: error.message,
           });
         })
       }
