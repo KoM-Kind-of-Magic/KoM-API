@@ -1,5 +1,5 @@
 const Deck = require('../models/deck')
-const Card = require('../models/cards')
+const Cards = require('../models/cards')
 const Legalities = require('../models/legalities')
 
 exports.deck = async (req, res) => {
@@ -129,12 +129,30 @@ exports.deck_by_id = async (req, res) => {
     else {
       Deck
       .findByPk(id)
-      .then((data) => {
-        if(data !== null) {
-          return res.status(200).send({
-            message: "Deck stored in data key",
-            data: data
-          });
+      .then((deck_data) => {
+        if(deck_data !== null) {
+          Cards
+            .findAll({
+              where: {
+                uuid: deck_data.cards
+              }
+            })
+            .then((cards_data) => {
+              const deck = {
+                "cards": cards_data,
+                "deck_id": deck_data.deck_id,
+                "name": deck_data.name,
+                "format": deck_data.format,
+                "type": deck_data.type,
+                "description": deck_data.description,
+                "created_at": deck_data.created_at,
+                "updated_at": deck_data.updated_at
+              }
+              return res.status(200).send({
+                message: "Deck stored in data key",
+                data: deck
+              });
+            })
         }
         else {
           return res.status(404).send({
