@@ -50,14 +50,14 @@ const Deck = sequelize.define('deck', {
   //     key: 'user_id',
   //   }
   // },
-  representing_card_uuid: {
-    type: DataTypes.UUID,
-    allowNull: true,
-    references: {
-      model: 'cards',
-      key: 'uuid',
-    }
-  },
+  // representing_card_uuid: {
+  //   type: DataTypes.UUID,
+  //   allowNull: true,
+  //   references: {
+  //     model: 'cards',
+  //     key: 'uuid',
+  //   }
+  // },
 }, {
   freezeTableName: true,
 });
