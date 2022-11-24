@@ -233,7 +233,24 @@ exports.remove_card = async (req, res) => {
     const id = req.params.id;
     const card_uuid = req.params.uuid;
 
-    console.log(card_uuid);
+    // On doit d'abord checker si l'id du deck existe bien
+    const deck_to_update = await Deck.findByPk(id);
+    // On doit faire évoluer les conditions : Si la carte existe dans la bdd
+    const card_exist = await Card.findOne({ where: { uuid: card_uuid } });
+
+    // si pas de deck associé
+    if(!deck_to_update)
+    {
+      return res.status(500).send({
+        message: "Pas de deck associé à cette id"
+      });
+    }
+    if(!card_exist)
+    {
+      return res.status(500).send({
+        message: "Pas de carte associé à cette uuid"
+      });
+    }
 
     if(id === null || id === undefined || id == ":id" || card_uuid === null || card_uuid === undefined || card_uuid == ":uuid")
     {
@@ -242,6 +259,9 @@ exports.remove_card = async (req, res) => {
       });      
     }
     else {
+      //  on verra pour le delete
+      const updated = await Deck.update( { representing_card_uuid: card_uuid} ,{ where: { deck_id: id} });
+
       return res.status(200).send({
         message: "Id de deck testé : " + id + " UUID de carte testé : " + card_uuid,
       });
@@ -251,6 +271,44 @@ exports.remove_card = async (req, res) => {
       message: error.message,
     });
   }
+}
+
+// To do : verification sur chaque carte + append à la liste au lieu de remplacer à chaque fois
+exports.add_card = async (req, res) => {
+  try {
+    const deck = req.params.id;
+    const updatedDeck = await Deck.findByPk(deck)
+
+    if(updatedDeck) {
+      const updated = await Deck.update({ cards: req.body.cards}, {
+        where: { deck_id: deck}
+      });
+
+      if(updated)
+      {
+        return res.status(200).send({
+          message: "OK",
+          data: updatedDeck
+        });      
+      }
+      else{
+        return res.status(500).send({
+          message: "Mauvaise uuid de carte",
+        }); 
+      }
+
+    }
+    else {
+      return res.status(500).send({
+        message: "Mauvaise id de deck",
+      });       
+    }
+
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }  
 };
 
 exports.get_formats = async (req, res) => {
