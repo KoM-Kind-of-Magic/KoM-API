@@ -138,8 +138,13 @@ exports.deck_by_id = async (req, res) => {
               }
             })
             .then((cards_data) => {
+              let real_card_list = [];
+              deck_data.cards.forEach((uuid) => {
+                real_card_list.push(cards_data.find((card) => card.uuid === uuid));
+              });
+
               const deck = {
-                "cards": cards_data,
+                "cards": real_card_list,
                 "deck_id": deck_data.deck_id,
                 "name": deck_data.name,
                 "format": deck_data.format,
