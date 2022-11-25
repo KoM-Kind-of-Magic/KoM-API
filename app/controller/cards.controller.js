@@ -63,6 +63,8 @@ exports.search = async (req, res) => {
     const finishes = req.body.finishes ?? "";
     Cards
       .findAll({
+        attributes: ['name', 'scryfallId', 'types', 'uuid'],
+        group: ['name'],
         offset: (page-1)*results, 
         limit: results,
         where: {
