@@ -1,11 +1,8 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-exports.auth = async (req, res) => {
-  console.log("hello");
-  res.status(200).send("OK");
-};
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.register = async (req, res) => {
     try {
@@ -59,11 +56,11 @@ exports.login = async (req, res) => {
       res.status(400).send("All inputs are required");
     }
 
-    const user = await UserModel.findOne({ email });
+    const user = await User.findOne({ where: {email : email} });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign(
-        { userid: user._id, isAdmin: user.isAdmin },
+        { user_id: user.user_id, isAdmin: user.isAdmin },
         process.env.JWT_KEY,
         {
           expiresIn: "2h",

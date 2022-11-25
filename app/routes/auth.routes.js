@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-const authController = require("../controller/auth.controller");
+const dotenv = require('dotenv');
+dotenv.config();
 
-router.get("/", authController.auth);
+const authController = require("../controller/auth.controller");
 
 // Register
 router.post("/register", authController.register);
