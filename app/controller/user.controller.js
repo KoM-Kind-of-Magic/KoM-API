@@ -10,6 +10,7 @@ exports.user = async (req, res) => {
 };
 
 exports.updateEmail = async (req, res) => {
+  // check que ce mail n'est pas déjà utilisé
   const token = req.headers["x-access-token"];
   const {email, new_email, password} = req.body;
 
@@ -20,12 +21,18 @@ exports.updateEmail = async (req, res) => {
       let decoded = jwt.decode(token, process.env.JWT_KEY);
       req.user = decoded;
       const user = await User.findOne({ where: {user_id : req.user.user_id} });
-      if(user && email === user.email && email != new_email && (await bcrypt.compare(password, user.password)))
+      if(user && email == user.email && email != new_email && (await bcrypt.compare(password, user.password)))
       {
-        // mettre à jour l'email
-        user.set({email: new_email});
-        await user.save();
-        res.send(user);
+        const emailCheck = await User.findOne({ where: {email : new_email} });
+        if (emailCheck)
+        {
+          res.send("This email is already used by another account or does not exists");
+        }
+        else {
+          user.set({email: new_email});
+          await user.save();
+          res.send(user);
+        }
       }
       else {
         res.status(404).send("FAIL")
