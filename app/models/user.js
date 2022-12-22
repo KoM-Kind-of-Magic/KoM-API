@@ -12,7 +12,7 @@ const User = sequelize.define('user', {
     allowNull: true,
     defaultValue: false
   },
-  nickname: {
+  username: {
     type: DataTypes.STRING,
     allowNull: true
   },
