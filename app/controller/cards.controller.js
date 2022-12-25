@@ -1,6 +1,7 @@
 const { Op, Sequelize } = require("sequelize");
 const Cards = require('../models/cards')
-const Legalities = require('../models/legalities')
+const Legalities = require('../models/legalities');
+const Sets = require("../models/sets");
 
 exports.cards = async (req, res) => {
   Cards
@@ -30,7 +31,13 @@ exports.card_by_uuid = async (req, res) => {
         model: Legalities,
         attributes: Legalities.uuid,
         required: false
-      }],
+      },
+      {
+        model: Sets,
+        attributes: ['name'],
+        required: false
+      }
+    ],
     })
     .then((data) => {
       if(data !== null) {

@@ -1,6 +1,7 @@
 const sequelize = require('../conf/database')
 const { DataTypes } = require('sequelize');
 const Legalities = require('./legalities');
+const Sets = require('./sets');
 
 const Cards = sequelize.define('cards', {
   id: {
@@ -370,4 +371,8 @@ Cards.hasMany(Legalities, {
   foreignKey: 'uuid',
 });
 
+Cards.hasOne(Sets, {
+  sourceKey: 'setCode',
+  foreignKey: 'code',
+});
 module.exports = Cards
