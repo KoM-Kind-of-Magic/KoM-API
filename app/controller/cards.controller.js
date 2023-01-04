@@ -25,7 +25,7 @@ exports.card_by_uuid = async (req, res) => {
     Cards
     .findOne({
       where: {
-        uuid: uuid
+        uuid: uuid,
       },
       include: [{
         model: Legalities,
@@ -34,8 +34,8 @@ exports.card_by_uuid = async (req, res) => {
       },
       {
         model: Sets,
-        attributes: ['name'],
-        required: false
+        attributes: ['name', 'totalSetSize', 'keyruneCode'],
+        required: false,
       }
     ],
     })
