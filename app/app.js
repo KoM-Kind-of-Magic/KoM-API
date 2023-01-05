@@ -28,6 +28,7 @@ const userRoutes = require("./routes/user.routes.js");
 const deckRoutes = require("./routes/deck.routes.js");
 const authRoutes = require("./routes/auth.routes.js");
 const setsRoutes = require("./routes/sets.routes.js");
+const rulingsRoutes = require("./routes/rulings.routes.js");
 
 app.use(express.json());
 app.use(cors({
@@ -39,5 +40,6 @@ app.use('/user', userRoutes);
 app.use('/deck', deckRoutes);
 app.use('/auth', authRoutes);
 app.use('/sets', setsRoutes);
+app.use('/rulings', rulingsRoutes);
 
 module.exports = app;
