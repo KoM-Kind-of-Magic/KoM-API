@@ -97,7 +97,7 @@
 
 
     - name: start pm2 process
-      command: 'pm2 start -x -i 4 --name app app/app.js'
+      command: 'pm2 start "node app/app.js"'
       become: yes
       become_user: admin
       environment:
