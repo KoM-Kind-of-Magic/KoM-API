@@ -1,6 +1,7 @@
 const { Op, Sequelize } = require("sequelize");
 const Cards = require('../models/cards')
-const Deck = require('../models/deck')
+const Legalities = require('../models/legalities');
+const Sets = require("../models/sets");
 
 exports.cards = async (req, res) => {
   Cards
@@ -21,11 +22,22 @@ exports.cards = async (req, res) => {
 exports.card_by_uuid = async (req, res) => {
   try {
     const uuid = req.params.uuid
-    Deck
+    Cards
     .findOne({
       where: {
-        uuid: uuid
+        uuid: uuid,
+      },
+      include: [{
+        model: Legalities,
+        attributes: Legalities.uuid,
+        required: false
+      },
+      {
+        model: Sets,
+        attributes: ['name', 'totalSetSize', 'keyruneCode'],
+        required: false,
       }
+    ],
     })
     .then((data) => {
       if(data !== null) {

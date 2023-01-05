@@ -27,6 +27,7 @@ const cardsRoutes = require("./routes/cards.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const deckRoutes = require("./routes/deck.routes.js");
 const authRoutes = require("./routes/auth.routes.js");
+const setsRoutes = require("./routes/sets.routes.js");
 
 app.use(express.json());
 app.use(cors({
@@ -37,5 +38,6 @@ app.use('/cards', cardsRoutes);
 app.use('/user', userRoutes);
 app.use('/deck', deckRoutes);
 app.use('/auth', authRoutes);
+app.use('/sets', setsRoutes);
 
 module.exports = app;

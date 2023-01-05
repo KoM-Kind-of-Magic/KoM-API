@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const Deck = require('../models/deck')
 const Cards = require('../models/cards')
 const Legalities = require('../models/legalities')
@@ -5,13 +6,47 @@ const Legalities = require('../models/legalities')
 exports.deck = async (req, res) => {
   Deck
     .findAll({offset: 0, limit: 20})
-    .then((data) => {
-      return res.status(200).send({
-        message: "decks are stored in data key",
-        data: data,
-      });
+    .then((decks) => {
+      const getDeckRepresentingCard = decks.map((deck) => {
+        const jsonDeck = JSON.parse(JSON.stringify(deck))
+        return Cards
+          .findOne({
+            order: [
+              ['manaValue', 'DESC'],
+            ],
+            attributes: [
+              'name',
+              'scryfallId',
+              'types',
+              'uuid',
+              Sequelize.fn('max', Sequelize.col('manaValue')), // to replace representing card while not added in object
+            ],
+            group: ['manaValue'],
+            where: {
+              uuid: jsonDeck.cards,
+            }
+          })
+          .then((card) => {
+            jsonDeck.representingCard = card
+            return jsonDeck
+          })
+          .catch((error) => {
+            console.error(error)
+            return res.status(500).send({
+              message: error.message,
+            });
+          })
+      })
+      
+      Promise.all(getDeckRepresentingCard).then(data => {
+        return res.status(200).send({
+          message: "decks are stored in data key",
+          data: data,
+        });
+      })
     })
     .catch((error) => {
+      console.error(error)
       return res.status(500).send({
         message: error.message,
       });

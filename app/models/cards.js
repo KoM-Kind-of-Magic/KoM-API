@@ -1,5 +1,7 @@
 const sequelize = require('../conf/database')
 const { DataTypes } = require('sequelize');
+const Legalities = require('./legalities');
+const Sets = require('./sets');
 
 const Cards = sequelize.define('cards', {
   id: {
@@ -364,4 +366,13 @@ const Cards = sequelize.define('cards', {
   freezeTableName: true,
 });
 
+Cards.hasMany(Legalities, {
+  sourceKey: 'uuid',
+  foreignKey: 'uuid',
+});
+
+Cards.hasOne(Sets, {
+  sourceKey: 'setCode',
+  foreignKey: 'code',
+});
 module.exports = Cards
