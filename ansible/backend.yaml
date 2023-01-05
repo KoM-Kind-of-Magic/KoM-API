@@ -76,10 +76,14 @@
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
         MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
-
     - name: Install n
       become_user: admin
-      shell: sudo npm install -g n pm2 && sudo n 16 && cd api && npm install && pm2 start app/app.js
+      shell: sudo npm install -g n pm2 && sudo n 16 && cd api && npm install
+    - name: Delete old pm2 process
+      command: pm2 delete ws-node
+      ignore_errors: yes
+    - name: Start pm2
+      command: pm2 start app/app.js --name node-app
       environment:
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
