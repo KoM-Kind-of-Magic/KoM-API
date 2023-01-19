@@ -67,6 +67,7 @@ exports.login = async (req, res) => {
         }
       );
       const response = {
+        userId: user,
         token: token,
       };
       res.status(201).send(response);
