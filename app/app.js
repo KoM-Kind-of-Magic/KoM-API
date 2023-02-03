@@ -12,7 +12,7 @@ const sequelize = require("./conf/database")
 try {
   sequelize.authenticate();
   console.log('CONNECTED');
-  sequelize.sync({ force: true }).then(() => {
+  sequelize.sync({ force: false }).then(() => {
     console.log(`Database & tables created!`);
   })
   .catch((error) => {
