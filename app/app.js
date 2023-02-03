@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 var cors = require('cors');
 const app = express();
-const PORT = process.env.NODE_PORT || 8090;
+const PORT = process.env.NODE_PORT || 6868;
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server Running on port ${PORT}`);
@@ -12,7 +12,7 @@ const sequelize = require("./conf/database")
 try {
   sequelize.authenticate();
   console.log('CONNECTED');
-  sequelize.sync({ force: false }).then(() => {
+  sequelize.sync({ force: true }).then(() => {
     console.log(`Database & tables created!`);
   })
   .catch((error) => {

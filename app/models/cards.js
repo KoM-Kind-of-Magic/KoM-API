@@ -6,7 +6,7 @@ const Sets = require('./sets');
 const Cards = sequelize.define('cards', {
   id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    autoIncrement: true,    
     primaryKey: true
   },
   artist: {
@@ -307,7 +307,11 @@ const Cards = sequelize.define('cards', {
   },
   setCode: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
+    references: {
+      model: Sets,
+      key: 'code',
+    }
   },
   side: {
     type: DataTypes.STRING,
@@ -352,7 +356,10 @@ const Cards = sequelize.define('cards', {
   uuid: {
     type: DataTypes.UUID,
     allowNull: false,
-    unique: true
+    references: {
+      model: Legalities,
+      key: 'uuid',
+    }
   },
   variations: {
     type: DataTypes.STRING,
@@ -364,15 +371,5 @@ const Cards = sequelize.define('cards', {
   },
 }, {
   freezeTableName: true,
-});
-
-Cards.hasMany(Legalities, {
-  sourceKey: 'uuid',
-  foreignKey: 'uuid',
-});
-
-Cards.hasOne(Sets, {
-  sourceKey: 'setCode',
-  foreignKey: 'code',
 });
 module.exports = Cards

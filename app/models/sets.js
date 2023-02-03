@@ -4,9 +4,8 @@ const { DataTypes } = require('sequelize');
 const Sets = sequelize.define('sets', {
   id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     primaryKey: true,
-    defaultValue: null,
+    autoIncrement: true
   },
   baseSetSize: {
     type: DataTypes.INTEGER,
@@ -29,7 +28,7 @@ const Sets = sequelize.define('sets', {
     defaultValue: null,
   },
   code: {
-    type: DataTypes.STRING(8),
+    type: DataTypes.STRING,
     allowNull: true,
     unique: true,
   },

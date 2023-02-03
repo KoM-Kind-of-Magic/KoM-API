@@ -42,22 +42,22 @@ const Deck = sequelize.define('deck', {
     type: DataTypes.DATE,
     allowNull: true
   },
-  // user_id: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  //   references: {
-  //     model: 'user',
-  //     key: 'user_id',
-  //   }
-  // },
-  // representing_card_uuid: {
-  //   type: DataTypes.UUID,
-  //   allowNull: true,
-  //   references: {
-  //     model: 'cards',
-  //     key: 'uuid',
-  //   }
-  // },
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'user',
+      key: 'user_id',
+    }
+  },
+  representing_card_uuid: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'cards',
+      key: 'uuid',
+    }
+  },
 }, {
   freezeTableName: true,
 });

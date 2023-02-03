@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
   process.env.MYSQLDB_USER,
   process.env.MYSQLDB_PASSWORD, 
   {
-    host: '127.0.0.1',
+    host: 'mariadb',
     dialect: 'mariadb',
     define: {
       timestamps: false 

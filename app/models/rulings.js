@@ -4,9 +4,8 @@ const { DataTypes } = require('sequelize');
 const Rulings = sequelize.define('rulings', {
   id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     primaryKey: true,
-    defaultValue: null,
+    autoIncrement: true
   },
   date: {
     type: DataTypes.DATE,
@@ -20,7 +19,7 @@ const Rulings = sequelize.define('rulings', {
   },
   uuid: {
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull: true,
     defaultValue: null,
   },
 }, {

@@ -4,7 +4,7 @@ const { DataTypes } = require('sequelize');
 const Legalities = sequelize.define('legalities', {
   id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    autoIncrement: true,
     primaryKey: true
   },
   format: {
@@ -16,8 +16,9 @@ const Legalities = sequelize.define('legalities', {
     allowNull: false
   },
   uuid: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.UUID,
+    allowNull: false,
+    unique: true
   },
 }, {
   freezeTableName: true,

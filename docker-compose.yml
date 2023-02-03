@@ -7,30 +7,25 @@ services:
     command: pm2-dev ./app/app.js
     environment:
       NODE_ENV: development
-      DB_HOST: mysql
-      DB_USER: $MYSQLDB_USER
-      DB_PASSWORD: $MYSQLDB_PASSWORD
-      DB_NAME: $MYSQLDB_DATABASE
-      DB_PORT: $MYSQLDB_PORT
-    depends_on:
-      - mysql
+    links:
+      - mariadb
     env_file: ./.env
     ports:
-      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+      - ${NODE_PORT}:${NODE_PORT}
     volumes:
       - .:/usr/src/app
       - ./node_modules:/home/nodejs/node_modules
 
-  mysql:
-    image: mysql:5.7
+  mariadb:
+    image: mariadb:latest
     env_file: ./.env
     volumes:
-      - mysql:/var/lib/mysql
+      - maria-data:/data/db
     environment:
-      MYSQL_ROOT_PASSWORD: $MYSQLDB_ROOT_PASSWORD
-      MYSQL_DATABASE: $MYSQLDB_DATABASE
+      MYSQL_ROOT_PASSWORD: ${MYSQLDB_PASSWORD}
+      MYSQL_DATABASE: ${MYSQLDB_DATABASE}
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - ${MYSQLDB_PORT}:${MYSQLDB_PORT}
 
   adminer:
     image: adminer:latest
@@ -41,4 +36,4 @@ services:
       - "8080:8080"
 
 volumes:
-  mysql:
+  maria-data:
