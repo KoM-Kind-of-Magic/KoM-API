@@ -356,3 +356,32 @@ exports.get_formats = async (req, res) => {
     data: Legalities.getAttributes().format.values,
   });
 };
+
+exports.ajout_liste = async (req, res) => {
+  const raw_deck_list = req.body.deck;
+  console.log(raw_deck_list);
+  const deck_list = processDeck(raw_deck_list);
+
+  res.json({ deck_list });
+};
+
+async function processDeck(raw_deck_list) {
+  // Votre code pour traiter le deckString et créer un objet deck
+  // console.log(raw_deck_list);
+  const deck = [];
+  const lines = raw_deck_list.split('\n');
+  for (const line of lines) {
+    const [count, name] = line.split(' ');
+    const card = await Cards.findOne({ where: { name } });
+    if (!card) {
+      console.error(`Card not found: ${name}`);
+      continue;
+    }
+    deck.push({
+      count: parseInt(count, 10),
+      card,
+    });
+  }
+  console.log(deck);
+  return deck;
+}
