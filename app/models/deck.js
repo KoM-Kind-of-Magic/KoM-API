@@ -27,7 +27,7 @@ const Deck = sequelize.define('deck', {
     type: DataTypes.TEXT,
     allowNull: true,
     get() {
-      return this.getDataValue('cards') && this.getDataValue('cards').includes(';') ? this.getDataValue('cards').split(';') : [this.getDataValue('cards')]
+      return this.getDataValue('cards') && this.getDataValue('cards').includes(';') ? this.getDataValue('cards').split(';') : this.getDataValue('cards') != null ? [this.getDataValue('cards')] : []
     },
     set(val) {
       this.setDataValue('cards',val.join(';'))
