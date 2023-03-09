@@ -24,4 +24,6 @@ router.delete("/:id/cards/:uuid", deckController.remove_card)
 router.post("/:id/cards", deckController.add_card);
 // router.post("/:id/cards/:uuid", deckController.add_card);
 
+router.post("/import", deckController.import)
+
 module.exports = router;

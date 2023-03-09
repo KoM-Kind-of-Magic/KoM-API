@@ -356,3 +356,61 @@ exports.get_formats = async (req, res) => {
     data: Legalities.getAttributes().format.values,
   });
 };
+
+exports.import = async (req, res) => {
+  const import_text = req.body.cardList;
+  if (import_text && import_text.length > 0) {
+    const card_list = import_text.split(/\n/)
+    let import_result = {
+      valid_lines: [],
+      invalid_lines: [],
+      cards: []
+    }
+    const importCards = card_list.map((card) => {
+      try {
+        let [amount, name] = card.split(/\ (.*)/);
+        amount = parseInt(amount);
+        if (typeof amount == 'number' && name.length > 0) {
+          return Cards
+            .findOne({
+              where: {
+                name: name
+              }
+            })
+            .then((card_data) => {
+              console.log(card_data);
+              if (card_data != null) {
+                for (x = 0; x < amount; x++) {
+                  import_result.cards.push(card_data.dataValues);
+                }
+                import_result.valid_lines.push(name);
+              }
+              else {
+                import_result.invalid_lines.push(name);
+              }
+            })
+            .catch((error) => {
+              throw new Error(error);
+            })
+        }
+        else {
+          throw new Error("Invalid line.");
+        }
+      } catch (error) {
+        return import_result.invalid_lines.push(card);
+      }
+    })
+      
+    Promise.all(importCards).then(() => {
+      return res.status(200).send({
+        message: "Import result is stored in data key",
+        data: import_result
+      });
+    })
+  }
+  else {
+    return res.status(500).send({
+      message: "Import text is not valid.",
+    });
+  }
+};
