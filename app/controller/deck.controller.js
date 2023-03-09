@@ -378,7 +378,6 @@ exports.import = async (req, res) => {
               }
             })
             .then((card_data) => {
-              console.log(card_data);
               if (card_data != null) {
                 for (x = 0; x < amount; x++) {
                   import_result.cards.push(card_data.dataValues);
