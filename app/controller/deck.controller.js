@@ -8,7 +8,7 @@ exports.deck = async (req, res) => {
     .findAll(
       {
         where: {
-          user_id: req.user_id,
+          user_id: req.user.user_id,
         }
       },
       {
