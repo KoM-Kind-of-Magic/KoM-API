@@ -1,5 +1,6 @@
 const sequelize = require('../conf/database')
 const { DataTypes } = require('sequelize');
+const User = require('./user');
 
 const Deck = sequelize.define('deck', {
   deck_id: {
@@ -42,14 +43,14 @@ const Deck = sequelize.define('deck', {
     type: DataTypes.DATE,
     allowNull: true
   },
-  // user_id: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  //   references: {
-  //     model: 'user',
-  //     key: 'user_id',
-  //   }
-  // },
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'user_id',
+    }
+  },
   // representing_card_uuid: {
   //   type: DataTypes.UUID,
   //   allowNull: true,
