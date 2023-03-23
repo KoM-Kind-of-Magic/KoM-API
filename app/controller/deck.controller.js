@@ -67,7 +67,7 @@ exports.create = async (req, res) => {
       format: req.body.format,
       type: req.body.type,
       description: req.body.description,
-      user_id: req.user_id
+      user_id: req.user.user_id
     });
 
     await deck.save();
