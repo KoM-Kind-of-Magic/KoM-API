@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 const deckController = require("../controller/deck.controller");
 
-router.get("/", deckController.deck); // for the moment this route only retrieves the first 20 decks from the database
+router.get("/", auth, deckController.deck); // for the moment this route only retrieves the first 20 decks from the database
 // router.get("/fields", deckController.fields); //I don't think this route will be used so i'll leave it here commented
 
 // POST	Create
-router.post("/", deckController.create);
+router.post("/", auth, deckController.create);
 // GET All formats possible for a deck
 router.get("/formats", deckController.get_formats);
 // GET	Read
