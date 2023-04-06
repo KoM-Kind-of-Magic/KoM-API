@@ -5,7 +5,17 @@ const Legalities = require('../models/legalities')
 
 exports.deck = async (req, res) => {
   Deck
-    .findAll({offset: 0, limit: 20})
+    .findAll(
+      {
+        where: {
+          user_id: req.user.user_id,
+        }
+      },
+      {
+        offset: 0, 
+        limit: 20,
+      },
+    )
     .then((decks) => {
       const getDeckRepresentingCard = decks.map((deck) => {
         const jsonDeck = JSON.parse(JSON.stringify(deck))
@@ -67,6 +77,7 @@ exports.create = async (req, res) => {
       format: req.body.format,
       type: req.body.type,
       description: req.body.description,
+      user_id: req.user.user_id
     });
 
     await deck.save();
