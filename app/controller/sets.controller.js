@@ -22,3 +22,23 @@ exports.sets_by_code = async (req, res) => {
     });
   })
 };
+
+exports.get_sets = async (req, res) => {
+  Sets
+  .findAll({
+    attributes: ['name', 'code', 'keyruneCode', 'releaseDate'],
+    group: ['code'],
+    order: [['releaseDate', 'DESC']]
+  })
+  .then((data) => {
+    return res.status(200).send({
+      message: "sets are stored in data key",
+      data: data,
+    });
+  })
+  .catch((error) => {
+    return res.status(500).send({
+      message: error.message,
+    });
+  })
+};
