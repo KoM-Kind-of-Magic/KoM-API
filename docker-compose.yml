@@ -1,31 +1,44 @@
 version: "3"
 services:
   app:
-    build: .
+    build:
+      context: ./
+      dockerfile: Dockerfile
     command: pm2-dev ./app/app.js
     environment:
       NODE_ENV: development
-      MYSQL_ROOT_PASSWORD: api
-      MYSQL_DATABASE: api
-      MYSQL_ROOT_USERNAME: root
+      DB_HOST: mysql
+      DB_USER: $MYSQLDB_USER
+      DB_PASSWORD: $MYSQLDB_PASSWORD
+      DB_NAME: $MYSQLDB_DATABASE
+      DB_PORT: $MYSQLDB_PORT
     depends_on:
       - mysql
+    env_file: ./.env
     ports:
-      - "3030:8080"
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     volumes:
       - .:/usr/src/app
       - ./node_modules:/home/nodejs/node_modules
 
   mysql:
     image: mysql:5.7
+    env_file: ./.env
     volumes:
       - mysql:/var/lib/mysql
-    environment: 
-      MYSQL_ROOT_PASSWORD: api
-      MYSQL_DATABASE: api
-      MYSQL_ROOT_USERNAME: root
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQLDB_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQLDB_DATABASE
     ports:
-      - "3307:3306"
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+
+  adminer:
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    restart: always
+    ports: 
+      - "8080:8080"
 
 volumes:
   mysql:

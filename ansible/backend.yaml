@@ -1,0 +1,106 @@
+- hosts: back
+  become: yes
+  tasks:
+    - name: Install pkg
+      apt:
+        pkg:
+          - git
+          - nodejs
+          - npm
+          - wget
+          - nginx
+          - mariadb-server
+          - python3-mysqldb
+        state: latest
+        update_cache: yes
+
+    - name: Create database user with all database privileges
+      vars:
+        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+        MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+      community.mysql.mysql_user:
+        name: "{{ MYSQLDB_USER }}"
+        password: "{{ MYSQLDB_PASSWORD }}"
+        priv: '*.*:ALL'       
+        state: present
+
+    - name: Create a new database
+      vars:
+        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+      community.mysql.mysql_db:
+        name: "{{ MYSQLDB_DATABASE }}"
+        state: present
+
+    - name: Pull source code project
+      become_user: admin
+      ansible.builtin.git:
+        repo: https://github.com/KoM-Kind-of-Magic/KoM-API
+        dest: api
+        force: yes
+        version: dev
+
+    # - name: Pull source code for db
+    #   become_user: admin
+    #   ansible.builtin.git:
+    #     repo: https://github.com/KoM-Kind-of-Magic/KoM-DB.git
+    #     dest: db
+    #     force: yes
+    #     version: master
+
+    - name: Copy using inline content
+      ansible.builtin.copy:
+        content: 'prefix=${HOME}/.npm-packages'
+        dest: /.npmrc
+
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: ./nginx-site.cfg
+        dest: /etc/nginx/sites-available/nginx-site.cfg
+      become: yes
+      
+    - name: create symlink
+      file:
+        src: /etc/nginx/sites-available/nginx-site.cfg
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+
+    - name: start nginx
+      service:
+          name: nginx
+          state: restarted
+    # - name: Feed database
+    #   # become_user: admin
+    #   shell: chmod u+x db/import.sh && cd db && ./import.sh
+    #   environment:
+    #     MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+    #     MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+    #     MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+
+    - name: Install n
+      become_user: admin
+      shell: sudo npm install -g n pm2 && sudo n 16 && cd api && npm install
+    # - name: Delete old pm2 process
+    #   command: pm2 delete ws-node
+    #   ignore_errors: yes
+    # - name: Start pm2
+    #   command: pm2 start app/app.js --name node-app
+    #   environment:
+    #     MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+    #     MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+    #     MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+    - name: delete existing pm2 processes if running
+      command: "pm2 delete app"
+      ignore_errors: True
+      become: yes
+      become_user: admin
+
+
+    - name: start pm2 process
+      command: 'pm2 start "node app/app.js"'
+      become: yes
+      become_user: admin
+      environment:
+        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+        MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"

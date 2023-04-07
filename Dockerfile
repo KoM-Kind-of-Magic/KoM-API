@@ -1,14 +1,12 @@
 FROM node:16
 LABEL MAINTAINER Michael Hueter <mthueter@gmail.com>
 
-RUN npm install pm2@latest --global --quiet
+RUN npm install pm2@latest --global --quiet && mkdir api
 
-WORKDIR /usr/src/app
-COPY package*.json ./
-
-# Bundle app source
+WORKDIR /api
+COPY ["./package.json", "./package-lock.json", "./"]
+RUN ls
+RUN npm install --production
 COPY . .
 
-EXPOSE 8080
-
-CMD ["pm2-runtime", "./config/pm2.json"]
+CMD ["npm", "run", "start"]
