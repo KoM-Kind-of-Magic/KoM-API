@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
         { user_id: user.user_id, isAdmin: user.isAdmin },
         process.env.JWT_KEY,
         {
-          expiresIn: "2h",
+          expiresIn: "24h",
         }
       );
       const response = {
@@ -78,3 +78,7 @@ exports.login = async (req, res) => {
     console.log(err);
   }
 };
+
+exports.checkToken = async (req, res) => {
+  res.status(201).send(req.body);
+}
