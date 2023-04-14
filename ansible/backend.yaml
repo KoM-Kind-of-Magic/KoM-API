@@ -96,11 +96,11 @@
       become_user: admin
 
     - name: start pm2 process
-      command: 'pm2 start "node app/app.js"'
+      command: 'pm2 start "node api/app/app.js"'
       become: yes
       become_user: admin
       environment:
-        MYSQL_ROOT_USERNAME: "{{ lookup('env','MYSQL_USERNAME') }}"
-        MYSQL_ROOT_PASSWORD: "{{ lookup('env','MYSQL_PASSWORD') }}"
+        MYSQL_USERNAME: "{{ lookup('env','MYSQL_USERNAME') }}"
+        MYSQL_PASSWORD: "{{ lookup('env','MYSQL_PASSWORD') }}"
         MYSQL_DATABASE: "{{ lookup('env','MYSQL_DATABASE') }}"
         JWT_KEY: "{{ lookup('env','JWT_KEY') }}"
