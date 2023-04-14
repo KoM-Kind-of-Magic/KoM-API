@@ -16,11 +16,11 @@
 
     - name: Create database user with all database privileges
       vars:
-        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
-        MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+        MYSQLDB_ROOT_USER: "{{ lookup('env','MYSQLDB_ROOT_USER') }}"
+        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_ROOT_PASSWORD') }}"
       community.mysql.mysql_user:
-        name: "{{ MYSQLDB_USER }}"
-        password: "{{ MYSQLDB_PASSWORD }}"
+        name: "{{ MYSQLDB_ROOT_USER }}"
+        password: "{{ MYSQLDB_ROOT_PASSWORD }}"
         priv: "*.*:ALL"
         state: present
 
@@ -100,7 +100,7 @@
       become: yes
       become_user: admin
       environment:
-        MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
-        MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
+        MYSQLDB_ROOT_USER: "{{ lookup('env','MYSQLDB_ROOT_USER') }}"
+        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_ROOT_PASSWORD') }}"
         MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
         JWT_KEY: "{{ lookup('env','JWT_KEY') }}"
