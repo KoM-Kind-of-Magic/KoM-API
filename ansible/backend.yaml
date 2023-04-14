@@ -21,7 +21,7 @@
       community.mysql.mysql_user:
         name: "{{ MYSQLDB_USER }}"
         password: "{{ MYSQLDB_PASSWORD }}"
-        priv: '*.*:ALL'       
+        priv: "*.*:ALL"
         state: present
 
     - name: Create a new database
@@ -37,7 +37,7 @@
         repo: https://github.com/KoM-Kind-of-Magic/KoM-API
         dest: api
         force: yes
-        version: dev
+        version: master
 
     # - name: Pull source code for db
     #   become_user: admin
@@ -49,7 +49,7 @@
 
     - name: Copy using inline content
       ansible.builtin.copy:
-        content: 'prefix=${HOME}/.npm-packages'
+        content: "prefix=${HOME}/.npm-packages"
         dest: /.npmrc
 
     - name: copy the nginx config file and restart nginx
@@ -57,7 +57,7 @@
         src: ./nginx-site.cfg
         dest: /etc/nginx/sites-available/nginx-site.cfg
       become: yes
-      
+
     - name: create symlink
       file:
         src: /etc/nginx/sites-available/nginx-site.cfg
@@ -67,8 +67,8 @@
 
     - name: start nginx
       service:
-          name: nginx
-          state: restarted
+        name: nginx
+        state: restarted
     # - name: Feed database
     #   # become_user: admin
     #   shell: chmod u+x db/import.sh && cd db && ./import.sh
@@ -95,7 +95,6 @@
       become: yes
       become_user: admin
 
-
     - name: start pm2 process
       command: 'pm2 start "node app/app.js"'
       become: yes
@@ -104,3 +103,4 @@
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
         MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+        JWT_KEY: "{{ lookup('env','JWT_KEY') }}"
