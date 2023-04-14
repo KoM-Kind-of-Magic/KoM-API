@@ -16,19 +16,19 @@
 
     - name: Create database user with all database privileges
       vars:
-        MYSQLDB_ROOT_USER: "{{ lookup('env','MYSQLDB_ROOT_USER') }}"
-        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_ROOT_PASSWORD') }}"
+        MYSQL_USER: "{{ lookup('env','MYSQL_USER') }}"
+        MYSQL_PASSWORD: "{{ lookup('env','MYSQL_PASSWORD') }}"
       community.mysql.mysql_user:
-        name: "{{ MYSQLDB_ROOT_USER }}"
-        password: "{{ MYSQLDB_ROOT_PASSWORD }}"
+        name: "{{ MYSQL_USER }}"
+        password: "{{ MYSQL_PASSWORD }}"
         priv: "*.*:ALL"
         state: present
 
     - name: Create a new database
       vars:
-        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+        MYSQL_DATABASE: "{{ lookup('env','MYSQL_DATABASE') }}"
       community.mysql.mysql_db:
-        name: "{{ MYSQLDB_DATABASE }}"
+        name: "{{ MYSQL_DATABASE }}"
         state: present
 
     - name: Pull source code project
@@ -86,7 +86,7 @@
     # - name: Start pm2
     #   command: pm2 start app/app.js --name node-app
     #   environment:
-    #     MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
+    #     MYSQLDB_USER: "{{ lookup('env','MYSQL_ROOT_USERNAME') }}"
     #     MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
     #     MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
     - name: delete existing pm2 processes if running
@@ -100,7 +100,7 @@
       become: yes
       become_user: admin
       environment:
-        MYSQLDB_ROOT_USER: "{{ lookup('env','MYSQLDB_ROOT_USER') }}"
-        MYSQLDB_ROOT_PASSWORD: "{{ lookup('env','MYSQLDB_ROOT_PASSWORD') }}"
-        MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+        MYSQL_ROOT_USERNAME: "{{ lookup('env','MYSQL_USERNAME') }}"
+        MYSQL_ROOT_PASSWORD: "{{ lookup('env','MYSQL_PASSWORD') }}"
+        MYSQL_DATABASE: "{{ lookup('env','MYSQL_DATABASE') }}"
         JWT_KEY: "{{ lookup('env','JWT_KEY') }}"

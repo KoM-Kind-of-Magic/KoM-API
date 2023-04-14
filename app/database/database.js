@@ -6,8 +6,8 @@ console.log(process.env.MYSQL_DATABASE);
 
 const sequelize = new Sequelize(
   process.env.MYSQL_DATABASE,
-  process.env.MYSQL_ROOT_USERNAME,
-  process.env.MYSQL_ROOT_PASSWORD, 
+  process.env.MYSQL_USERNAME,
+  process.env.MYSQL_PASSWORD, 
   {
     host: 'localhost',
     dialect: 'mysql',
