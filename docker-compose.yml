@@ -7,14 +7,13 @@ services:
     command: pm2-dev ./app/app.js
     environment:
       NODE_ENV: development
-      MYSQL_HOST: mysql
       MYSQL_USER: $MYSQL_USER
       MYSQL_PASSWORD: $MYSQL_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
       MYSQL_PORT: $MYSQL_PORT
     depends_on:
       - mariadb
-    env_file: ./.env
+    env_file: .env
     ports:
       - $NODE_LOCAL_PORT:8090
     volumes:
@@ -27,11 +26,6 @@ services:
     restart: always
     volumes:
       - mariadb:/var/lib/mysql
-    environment:
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DATABASE
     ports:
       - $MYSQL_LOCAL_PORT:3306
 
