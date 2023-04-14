@@ -103,3 +103,4 @@
         MYSQLDB_USER: "{{ lookup('env','MYSQLDB_USER') }}"
         MYSQLDB_PASSWORD: "{{ lookup('env','MYSQLDB_PASSWORD') }}"
         MYSQLDB_DATABASE: "{{ lookup('env','MYSQLDB_DATABASE') }}"
+        JWT_KEY: "{{ lookup('env','JWT_KEY') }}"
