@@ -213,10 +213,10 @@ const Cards = sequelize.define('cards', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  mcmMetaId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
+  // mcmMetaId: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true
+  // },
   mtgArenaId: {
     type: DataTypes.STRING,
     allowNull: true
