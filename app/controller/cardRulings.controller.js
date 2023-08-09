@@ -1,9 +1,9 @@
 const { Op, Sequelize } = require("sequelize");
-const Rulings = require("../models/rulings");
+const cardRulings = require("../models/cardRulings");
 
 exports.rulings_by_uuid = async (req, res) => {
   const uuid = req.params.uuid
-  Rulings
+  cardRulings
   .findAll({
     where: {
       uuid: uuid,

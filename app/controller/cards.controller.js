@@ -1,7 +1,8 @@
 const { Op, Sequelize } = require("sequelize");
 const Cards = require('../models/cards')
-const Legalities = require('../models/legalities');
+const cardLegalities = require('../models/cardLegalities');
 const Sets = require("../models/sets");
+const cardIdentifiers = require("../models/cardIdentifiers");
 
 exports.cards = async (req, res) => {
   Cards
@@ -28,22 +29,28 @@ exports.card_by_uuid = async (req, res) => {
         uuid: uuid,
       },
       include: [{
-        model: Legalities,
-        attributes: Legalities.uuid,
+        model: cardIdentifiers,
+        attributes: ['scryfallId', 'tcgplayerProductId'],
+        required: false
+      },
+      {
+        model: cardLegalities,
+        attributes: {
+          exclude: ['uuid', 'id'],
+        },
         required: false
       },
       {
         model: Sets,
         attributes: ['name', 'totalSetSize', 'keyruneCode'],
         required: false,
-      }
-    ],
+      }],
     })
     .then((data) => {
       if(data !== null) {
         return res.status(200).send({
           message: "Card stored in data key",
-          data: data
+          data: data,
         });
       }
       else {
@@ -165,7 +172,12 @@ exports.laBigFatSearch = async (req, res) => {
               colorIdentity: { [Op.or]: filtered }
             },
           ], 
-        }
+        },
+        include: [{
+          model: cardIdentifiers,
+          attributes: ['scryfallId'],
+          required: false
+        }],
       })
       .then((data) => {
         return res.status(200).send({
@@ -196,7 +208,12 @@ exports.search = async (req, res) => {
     const finishes = req.body.finishes ?? "";
     Cards
       .findAll({
-        attributes: ['name', 'scryfallId', 'types', 'uuid'],
+        attributes: ['name', 'types', 'uuid'],
+        include: [{
+          model: cardIdentifiers,
+          attributes: ['scryfallId'],
+          required: false
+        }],
         group: ['name'],
         offset: (page-1)*results, 
         limit: results,

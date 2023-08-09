@@ -1,6 +1,7 @@
 const sequelize = require('../conf/database')
 const { DataTypes } = require('sequelize');
-const Legalities = require('./legalities');
+const cardLegalities = require('./cardLegalities');
+const cardIdentifiers = require('./cardIdentifiers');
 const Sets = require('./sets');
 
 const Cards = sequelize.define('cards', {
@@ -29,18 +30,6 @@ const Cards = sequelize.define('cards', {
     type: DataTypes.ENUM('black','white','borderless','silver','gold'),
     allowNull: true
   },
-  cardKingdomEtchedId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  cardKingdomFoilId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  cardKingdomId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   cardParts: {
     type: DataTypes.STRING,
     allowNull: true
@@ -57,20 +46,12 @@ const Cards = sequelize.define('cards', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  convertedManaCost: {
-    type: DataTypes.FLOAT,
-    allowNull: true
-  },
   duelDeck: {
     type: DataTypes.STRING,
     allowNull: true
   },
   edhrecRank: {
     type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  faceConvertedManaCost: {
-    type: DataTypes.FLOAT,
     allowNull: true
   },
   faceFlavorName: {
@@ -209,34 +190,6 @@ const Cards = sequelize.define('cards', {
     type: DataTypes.FLOAT,
     allowNull: true
   },
-  mcmId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  mcmMetaId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  mtgArenaId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  mtgjsonV4Id: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  mtgoFoilId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  mtgoId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  multiverseId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   name: {
     type: DataTypes.STRING,
     allowNull: true
@@ -277,27 +230,11 @@ const Cards = sequelize.define('cards', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  purchaseUrls: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   rarity: {
     type: DataTypes.ENUM('uncommon','common','rare','mythic','special','bonus'),
     allowNull: true
   },
   rebalancedPrintings: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  scryfallId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  scryfallIllustrationId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  scryfallOracleId: {
     type: DataTypes.STRING,
     allowNull: true
   },
@@ -322,14 +259,6 @@ const Cards = sequelize.define('cards', {
     allowNull: true
   },
   supertypes: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  tcgplayerEtchedProductId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  tcgplayerProductId: {
     type: DataTypes.STRING,
     allowNull: true
   },
@@ -366,7 +295,12 @@ const Cards = sequelize.define('cards', {
   freezeTableName: true,
 });
 
-Cards.hasMany(Legalities, {
+Cards.hasMany(cardLegalities, {
+  sourceKey: 'uuid',
+  foreignKey: 'uuid',
+});
+
+Cards.hasOne(cardIdentifiers, {
   sourceKey: 'uuid',
   foreignKey: 'uuid',
 });

@@ -8,6 +8,7 @@ exports.sets_by_code = async (req, res) => {
     attributes: ['name', 'code', 'keyruneCode', 'releaseDate'],
     where: {
       code: codeList,
+      isOnlineOnly: false, //We want only paper cards
     },
   })
   .then((data) => {

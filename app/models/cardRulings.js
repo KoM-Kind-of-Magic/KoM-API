@@ -1,7 +1,7 @@
 const sequelize = require('../conf/database')
 const { DataTypes } = require('sequelize');
 
-const Rulings = sequelize.define('rulings', {
+const cardRulings = sequelize.define('cardRulings', {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -27,4 +27,4 @@ const Rulings = sequelize.define('rulings', {
   freezeTableName: true,
 });
 
-module.exports = Rulings
+module.exports = cardRulings

@@ -1,7 +1,8 @@
 const { Sequelize } = require("sequelize");
 const Deck = require('../models/deck')
 const Cards = require('../models/cards')
-const Legalities = require('../models/legalities')
+const cardLegalities = require('../models/cardLegalities')
+const cardIdentifiers = require("../models/cardIdentifiers");
 
 exports.deck = async (req, res) => {
   Deck
@@ -26,11 +27,15 @@ exports.deck = async (req, res) => {
             ],
             attributes: [
               'name',
-              'scryfallId',
               'types',
               'uuid',
               Sequelize.fn('max', Sequelize.col('manaValue')), // to replace representing card while not added in object
             ],
+            include: [{
+              model: cardIdentifiers,
+              attributes: ['scryfallId'],
+              required: false
+            }],
             group: ['manaValue'],
             where: {
               uuid: jsonDeck.cards,
@@ -181,7 +186,12 @@ exports.deck_by_id = async (req, res) => {
             .findAll({
               where: {
                 uuid: deck_data.cards
-              }
+              },
+              include: [{
+                model: cardIdentifiers,
+                attributes: ['scryfallId'],
+                required: false
+              }],
             })
             .then((cards_data) => {
               let real_card_list = [];
@@ -202,6 +212,11 @@ exports.deck_by_id = async (req, res) => {
               return res.status(200).send({
                 message: "Deck stored in data key",
                 data: deck
+              });
+            })
+            .catch((error) => {
+              return res.status(500).send({
+                message: error.message,
               });
             })
         }
@@ -363,8 +378,13 @@ exports.add_card = async (req, res) => {
 };
 
 exports.get_formats = async (req, res) => {
+  data = Object.keys(cardLegalities.rawAttributes);
+  // Exclude id and uuid from format list
+  data.splice(data.indexOf('id'), 1);
+  data.splice(data.indexOf('uuid'), 1);
+
   return res.status(200).send({
-    data: Legalities.getAttributes().format.values,
+    data: data,
   });
 };
 
