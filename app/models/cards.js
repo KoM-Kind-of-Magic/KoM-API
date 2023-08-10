@@ -46,6 +46,10 @@ const Cards = sequelize.define('cards', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  defense: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   duelDeck: {
     type: DataTypes.STRING,
     allowNull: true
