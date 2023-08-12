@@ -13,7 +13,7 @@ exports.sets_by_code = async (req, res) => {
   })
   .then((data) => {
     return res.status(200).send({
-      message: "sets are stored in data key",
+      message: "Sets are stored in data key",
       data: data,
     });
   })

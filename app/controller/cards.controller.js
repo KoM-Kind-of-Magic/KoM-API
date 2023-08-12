@@ -42,7 +42,7 @@ exports.card_by_uuid = async (req, res) => {
       },
       {
         model: Sets,
-        attributes: ['name', 'totalSetSize', 'keyruneCode'],
+        attributes: ['name', 'totalSetSize', 'keyruneCode', 'releaseDate'],
         required: false,
       }],
     })
@@ -70,6 +70,41 @@ exports.card_by_uuid = async (req, res) => {
     });
   }
 };
+
+exports.getPrintings = async (req, res) => {
+  try {
+    const cardName = req.body.cardName;
+
+    Cards.findAll({
+      attributes: ['uuid', 'name', 'setCode'],
+      where: {
+        name: cardName,
+      }
+    })
+    .then((data) => {
+      if(data !== null) {
+        return res.status(200).send({
+          message: "Printings stored in data key",
+          data: data,
+        });
+      }
+      else {
+        return res.status(404).send({
+          message: "Printings not found",
+        });
+      }
+    })
+    .catch((error) => {
+      return res.status(500).send({
+        message: error.message,
+      });
+    })
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }
+}
 
 exports.laBigFatSearch = async (req, res) => {
   try {

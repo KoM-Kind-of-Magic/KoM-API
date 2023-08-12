@@ -9,6 +9,8 @@ router.get("/", cardsController.cards);// for the moment this route only retriev
 router.post("/search", cardsController.search);
 router.post("/big-search", cardsController.laBigFatSearch);
 
+router.post("/getPrintings", cardsController.getPrintings);
+
 // GET	Read
 router.get("/:uuid", cardsController.card_by_uuid);
 
