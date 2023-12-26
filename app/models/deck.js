@@ -59,6 +59,10 @@ const Deck = sequelize.define('deck', {
   //     key: 'uuid',
   //   }
   // },
+  colors: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
 }, {
   freezeTableName: true,
 });
